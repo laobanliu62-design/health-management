@@ -1,0 +1,74 @@
+{
+    "project_id": "health-management",
+    "title": "健康管理",
+    "description": "一个让用户每天 1 分钟完成血压记录的健康管理系统",
+    "status": "in_progress",
+    "phase": "development",
+    "created_at": "2026-04-09T02:50:00Z",
+    "updated_at": "2026-04-10T06:08:00Z",
+    "manager": "admin 💕",
+    "team": ["flutter-dev"],
+    "tasks": [
+        {
+            "id": "TASK-001",
+            "title": "Flutter 项目初始化",
+            "status": "completed",
+            "progress": 90,
+            "assigned_to": "flutter-dev",
+            "priority": "P0",
+            "created_at": "2026-04-09T02:50:00Z",
+            "started_at": "2026-04-10T01:45:00Z",
+            "completed_at": "2026-04-10T06:08:00Z",
+            "completion_note": "实际已生成 17 个 Dart 文件，元数据未及时更新导致暂停。修正时间：2026-04-10T06:08:00Z"
+        },
+        {
+            "id": "TASK-002",
+            "title": "数据模型设计",
+            "status": "active",
+            "progress": 0,
+            "assigned_to": "flutter-dev",
+            "priority": "P0"
+        },
+        {
+            "id": "TASK-003",
+            "title": "首页 UI 开发",
+            "status": "pending",
+            "progress": 0,
+            "assigned_to": "flutter-dev",
+            "priority": "P0"
+        },
+        {
+            "id": "TASK-004",
+            "title": "记录页 UI 开发",
+            "status": "pending",
+            "progress": 0,
+            "assigned_to": "flutter-dev",
+            "priority": "P0"
+        },
+        {
+            "id": "TASK-005",
+            "title": "历史页 UI 开发",
+            "status": "pending",
+            "progress": 0,
+            "assigned_to": "flutter-dev",
+            "priority": "P0"
+        },
+        {
+            "id": "TASK-006",
+            "title": "Hive 本地存储集成",
+            "status": "pending",
+            "progress": 0,
+            "assigned_to": "flutter-dev",
+            "priority": "P0"
+        }
+    ],
+    "execution_principle": "先做出来，再变优秀",
+    "meta_fix_history": [
+        {
+            "timestamp": "2026-04-10T06:08:00Z",
+            "issue": "TASK-001 元数据未同步，实际已完成但显示 paused",
+            "action": "修正 TASK-001 状态为 completed，进度 90%，项目状态改为 in_progress",
+            "files_generated": 17
+        }
+    ]
+}

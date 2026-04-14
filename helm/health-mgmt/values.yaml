@@ -1,0 +1,57 @@
+# Health Management Helm Chart Values
+
+# Replica count
+replicaCount: 3
+
+# Image configuration
+image:
+  repository: health-mgmt
+  tag: latest
+  pullPolicy: IfNotPresent
+
+# Service configuration
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 80
+
+# Ingress configuration
+ingress:
+  enabled: true
+  className: nginx
+  annotations: {}
+  hosts:
+    - host: health.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
+
+# Resource limits
+resources:
+  limits:
+    cpu: 500m
+    memory: 256Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+# Persistence (for database if needed)
+persistence:
+  enabled: false
+  size: 1Gi
+
+# Health check
+livenessProbe:
+  httpGet:
+    path: /
+    port: 80
+  initialDelaySeconds: 30
+  periodSeconds: 10
+
+readinessProbe:
+  httpGet:
+    path: /
+    port: 80
+  initialDelaySeconds: 5
+  periodSeconds: 5

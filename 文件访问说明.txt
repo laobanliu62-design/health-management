@@ -1,0 +1,48 @@
+# 文件已就位 - 访问方式
+
+## 📁 文件位置
+
+### 位置 1: WSL 本地路径 ✅
+```
+/root/health-management/
+```
+
+### 位置 2: D 盘映射路径 ⚠️
+```
+/mnt/d/health-management/
+(Win 看不到，WSL 可见)
+```
+
+### 位置 3: WSL 共享路径 🆕
+```
+\\wsl$\Ubuntu\root\health-management
+(Win 直接访问)
+```
+
+## 🎯 访问方法
+
+### 方法 1: 双击批处理文件
+1. 在 Windows 打开 D 盘
+2. 双击 `访问健康管理系统.ps1`
+3. 应该会自动打开文件资源管理器
+
+### 方法 2: 直接访问 WSL 共享
+1. 按 `Win + R`
+2. 输入：`\\wsl$\Ubuntu\root\health-management`
+3. 按回车
+
+### 方法 3: 命令行访问
+在 PowerShell:
+```powershell
+wsl -d Ubuntu ls /root/health-management/app/lib/screens/
+```
+
+## ✅ 已创建文件
+
+| 文件 | 位置 | 大小 |
+|------|------|------|
+| home_screen.dart | 所有路径 | 13K |
+| record_screen.dart | 所有路径 | 9.5K |
+| history_screen.dart | 所有路径 | 13K |
+| main_tab_screen.dart | 所有路径 | 1.2K |
+| worker_manager_screen.dart | 所有路径 | 11K |

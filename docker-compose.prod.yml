@@ -1,0 +1,82 @@
+version: '3.8'
+
+# 健康管理 - 多容器编排配置
+
+services:
+  # ========================================
+  # Flutter Web 应用 (Nginx)
+  # ========================================
+  health-mgmt:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: health-mgmt:latest
+    container_name: health-mgmt-app
+    ports:
+      - "8080:80"
+    depends_on:
+      - db
+    networks:
+      - health-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost/"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
+
+  # ========================================
+  # MySQL 数据库
+  # ========================================
+  db:
+    image: mysql:8.0
+    container_name: health-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-health_root}
+      MYSQL_DATABASE: ${DB_NAME:-health_management}
+      MYSQL_USER: ${DB_USER:-health_user}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-health_password}
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./init-scripts:/docker-entrypoint-initdb.d  # 初始化脚本
+    networks:
+      - health-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DB_ROOT_PASSWORD:-health_root}"]
+      interval: 30s
+      timeout: 3s
+      retries: 5
+      start_period: 30s
+
+  # ========================================
+  # Redis 缓存 (可选)
+  # ========================================
+  redis:
+    image: redis:alpine
+    container_name: health-redis
+    ports:
+      - "6379:6379"
+    networks:
+      - health-network
+    restart: unless-stopped
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+
+# ========================================
+# 网络配置
+# ========================================
+networks:
+  health-network:
+    driver: bridge
+
+# ========================================
+# 数据卷配置
+# ========================================
+volumes:
+  mysql_data:
+    driver: local
+  redis_data:
+    driver: local

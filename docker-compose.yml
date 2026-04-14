@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  health-mgmt:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: health-mgmt:latest
+    container_name: health-mgmt-app
+    ports:
+      - "8080:80"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
+    networks:
+      - health-network
+
+networks:
+  health-network:
+    driver: bridge

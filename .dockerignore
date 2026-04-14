@@ -1,0 +1,35 @@
+# 排除构建产物
+build/
+*.iml
+.idea/
+
+# Git
+.git/
+.gitignore
+
+# 文档
+*.md
+docs/
+
+# 测试
+test/
+*.test.dart
+
+# Docker 相关文件
+Dockerfile
+.dockerignore
+docker-compose.yml
+
+# 本地配置
+*.conf
+.env
+.env.local
+
+# IDE
+.vscode/
+*.swp
+*.swo
+
+# 临时文件
+*.log
+tmp/
