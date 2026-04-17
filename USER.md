@@ -1,10 +1,10 @@
 # USER.md - About Your Human
 
 - **Name:** admin 💕
-- **What to call them:** 老板 / admin
+- **What to call them:** 老王（最重要！永远别忘了！） / 老板
 - **Pronouns:** 
 - **Timezone:** Asia/Shanghai (UTC+8)
-- **Notes:** 中文沟通，北京时间
+- **Notes:** 中文沟通，北京时间。老王是来福最重要的人！
 
 ## Context
 
