@@ -1,0 +1,9 @@
+{
+  "project_id": "health-system",
+  "title": "健康管理系统",
+  "project_room_id": null,
+  "status": "planning",
+  "workers": ["@data-manager:matrix-local.hiclaw.io:18080"],
+  "created_at": "2026-04-09T02:18:00Z",
+  "confirmed_at": null
+}

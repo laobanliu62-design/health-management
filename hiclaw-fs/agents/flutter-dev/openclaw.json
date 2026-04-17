@@ -1,0 +1,306 @@
+{
+  "gateway": {
+    "mode": "local",
+    "port": 18800,
+    "auth": {
+      "token": "88a8c465dd92e2927b75c10da8017fa18ba5c287290bc5b01528a1abdf1218dd"
+    },
+    "remote": {
+      "token": "88a8c465dd92e2927b75c10da8017fa18ba5c287290bc5b01528a1abdf1218dd"
+    }
+  },
+  "channels": {
+    "matrix": {
+      "enabled": true,
+      "homeserver": "http://matrix-local.hiclaw.io:8080",
+      "accessToken": "JZbuywmoY6g9VZ659tzz8WHwgvlmlRU4",
+      "encryption": false,
+      "dm": {
+        "policy": "allowlist",
+        "allowFrom": [
+          "@manager:matrix-local.hiclaw.io:18080",
+          "@admin:matrix-local.hiclaw.io:18080"
+        ]
+      },
+      "groupPolicy": "allowlist",
+      "groupAllowFrom": [
+        "@manager:matrix-local.hiclaw.io:18080",
+        "@admin:matrix-local.hiclaw.io:18080"
+      ],
+      "groups": {
+        "*": {
+          "allow": true,
+          "requireMention": true
+        }
+      }
+    }
+  },
+  "models": {
+    "mode": "merge",
+    "providers": {
+      "hiclaw-gateway": {
+        "baseUrl": "http://aigw-local.hiclaw.io:8080/v1",
+        "apiKey": "f1bcb6ea23e2dddba701d09b053db02d7a81ef5c256a69af4a8d87a36e0177ec",
+        "api": "openai-completions",
+        "models": [
+          {
+            "id": "gpt-5.4",
+            "name": "gpt-5.4",
+            "reasoning": true,
+            "contextWindow": 1050000,
+            "maxTokens": 128000,
+            "input": [
+              "text",
+              "image"
+            ]
+          },
+          {
+            "id": "gpt-5.3-codex",
+            "name": "gpt-5.3-codex",
+            "reasoning": true,
+            "contextWindow": 400000,
+            "maxTokens": 128000,
+            "input": [
+              "text",
+              "image"
+            ]
+          },
+          {
+            "id": "gpt-5-mini",
+            "name": "gpt-5-mini",
+            "reasoning": true,
+            "contextWindow": 400000,
+            "maxTokens": 128000,
+            "input": [
+              "text",
+              "image"
+            ]
+          },
+          {
+            "id": "gpt-5-nano",
+            "name": "gpt-5-nano",
+            "reasoning": true,
+            "contextWindow": 400000,
+            "maxTokens": 128000,
+            "input": [
+              "text",
+              "image"
+            ]
+          },
+          {
+            "id": "claude-opus-4-6",
+            "name": "claude-opus-4-6",
+            "reasoning": true,
+            "contextWindow": 1000000,
+            "maxTokens": 128000,
+            "input": [
+              "text",
+              "image"
+            ]
+          },
+          {
+            "id": "claude-sonnet-4-6",
+            "name": "claude-sonnet-4-6",
+            "reasoning": true,
+            "contextWindow": 1000000,
+            "maxTokens": 64000,
+            "input": [
+              "text",
+              "image"
+            ]
+          },
+          {
+            "id": "claude-haiku-4-5",
+            "name": "claude-haiku-4-5",
+            "reasoning": true,
+            "contextWindow": 200000,
+            "maxTokens": 64000,
+            "input": [
+              "text",
+              "image"
+            ]
+          },
+          {
+            "id": "qwen3.5-plus",
+            "name": "qwen3.5-plus",
+            "reasoning": true,
+            "contextWindow": 200000,
+            "maxTokens": 64000,
+            "input": [
+              "text",
+              "image"
+            ]
+          },
+          {
+            "id": "deepseek-chat",
+            "name": "deepseek-chat",
+            "reasoning": true,
+            "contextWindow": 256000,
+            "maxTokens": 128000,
+            "input": [
+              "text"
+            ]
+          },
+          {
+            "id": "deepseek-reasoner",
+            "name": "deepseek-reasoner",
+            "reasoning": true,
+            "contextWindow": 256000,
+            "maxTokens": 128000,
+            "input": [
+              "text"
+            ]
+          },
+          {
+            "id": "kimi-k2.5",
+            "name": "kimi-k2.5",
+            "reasoning": true,
+            "contextWindow": 256000,
+            "maxTokens": 128000,
+            "input": [
+              "text",
+              "image"
+            ]
+          },
+          {
+            "id": "glm-5",
+            "name": "glm-5",
+            "reasoning": true,
+            "contextWindow": 200000,
+            "maxTokens": 128000,
+            "input": [
+              "text"
+            ]
+          },
+          {
+            "id": "MiniMax-M2.7",
+            "name": "MiniMax-M2.7",
+            "reasoning": true,
+            "contextWindow": 200000,
+            "maxTokens": 128000,
+            "input": [
+              "text"
+            ]
+          },
+          {
+            "id": "MiniMax-M2.7-highspeed",
+            "name": "MiniMax-M2.7-highspeed",
+            "reasoning": true,
+            "contextWindow": 200000,
+            "maxTokens": 128000,
+            "input": [
+              "text"
+            ]
+          },
+          {
+            "id": "MiniMax-M2.5",
+            "name": "MiniMax-M2.5",
+            "reasoning": true,
+            "contextWindow": 200000,
+            "maxTokens": 128000,
+            "input": [
+              "text"
+            ]
+          },
+          {
+            "id": "qwen-35b",
+            "name": "qwen-35b",
+            "reasoning": true,
+            "contextWindow": 150000,
+            "maxTokens": 128000,
+            "input": [
+              "text"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "agents": {
+    "defaults": {
+      "timeoutSeconds": 1800,
+      "workspace": "~",
+      "model": {
+        "primary": "hiclaw-gateway/qwen-35b"
+      },
+      "models": {
+        "hiclaw-gateway/gpt-5.4": {
+          "alias": "gpt-5.4"
+        },
+        "hiclaw-gateway/gpt-5.3-codex": {
+          "alias": "gpt-5.3-codex"
+        },
+        "hiclaw-gateway/gpt-5-mini": {
+          "alias": "gpt-5-mini"
+        },
+        "hiclaw-gateway/gpt-5-nano": {
+          "alias": "gpt-5-nano"
+        },
+        "hiclaw-gateway/claude-opus-4-6": {
+          "alias": "claude-opus-4-6"
+        },
+        "hiclaw-gateway/claude-sonnet-4-6": {
+          "alias": "claude-sonnet-4-6"
+        },
+        "hiclaw-gateway/claude-haiku-4-5": {
+          "alias": "claude-haiku-4-5"
+        },
+        "hiclaw-gateway/qwen3.5-plus": {
+          "alias": "qwen3.5-plus"
+        },
+        "hiclaw-gateway/deepseek-chat": {
+          "alias": "deepseek-chat"
+        },
+        "hiclaw-gateway/deepseek-reasoner": {
+          "alias": "deepseek-reasoner"
+        },
+        "hiclaw-gateway/kimi-k2.5": {
+          "alias": "kimi-k2.5"
+        },
+        "hiclaw-gateway/glm-5": {
+          "alias": "glm-5"
+        },
+        "hiclaw-gateway/MiniMax-M2.7": {
+          "alias": "MiniMax-M2.7"
+        },
+        "hiclaw-gateway/MiniMax-M2.7-highspeed": {
+          "alias": "MiniMax-M2.7-highspeed"
+        },
+        "hiclaw-gateway/MiniMax-M2.5": {
+          "alias": "MiniMax-M2.5"
+        },
+        "hiclaw-gateway/qwen-35b": {
+          "alias": "qwen-35b"
+        }
+      },
+      "maxConcurrent": 4,
+      "subagents": {
+        "maxConcurrent": 8
+      }
+    }
+  },
+  "session": {
+    "resetByType": {
+      "dm": {
+        "mode": "daily",
+        "atHour": 4
+      },
+      "group": {
+        "mode": "daily",
+        "atHour": 4
+      }
+    }
+  },
+  "plugins": {
+    "load": {
+      "paths": [
+        "/opt/openclaw/extensions/matrix"
+      ]
+    },
+    "entries": {
+      "matrix": {
+        "enabled": true
+      }
+    }
+  }
+}
