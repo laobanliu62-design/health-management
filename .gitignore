@@ -57,6 +57,9 @@ manager-workspace/
 # pnpm local state
 .local/
 
+# SSH keys (敏感)
+.ssh/
+
 # credentials (敏感)
 credentials/
 state.json
