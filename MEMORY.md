@@ -132,11 +132,18 @@
 - Day 5: 自定义网络(docker-study-network) + 数据卷(redis-data) + 容器间通信(ping<1ms) ✅
 - Day 6: Compose进阶 + 环境变量(.env/env_file) + 健康检查(healthcheck) + 资源限制 + 日志轮转 ✅
 
-### 待完成 (Day 7)
-- Day 6: Docker Compose 进阶 + 环境变量 + 健康检查
-- Day 7: 镜像推送(Docker Hub) + 完整项目演练 + Week 1 总结
+### 已完成 (Day 1-7)
+- Day 1: Docker 环境检查(v29.1.3) + Hello World + Nginx ✅
+- Day 2: 自定义 Dockerfile (62.2MB, nginx:alpine, 8层构建) ✅
+- Day 3: 缓存机制(30s→3s) + 多阶段构建 ✅
+- Day 4: .dockerignore + docker-compose + Redis(6379) ✅
+- Day 5: 自定义网络(docker-study-network) + 数据卷(redis-data) + 容器间通信(ping<1ms) ✅
+- Day 6: Compose进阶 + 环境变量(.env/env_file) + 健康检查(healthcheck) + 资源限制 + 日志轮转 ✅
+- Day 7: 镜像推送(Docker Hub) + 完整项目演练 + Week 1 总结 ✅
 
-### Docker 镜像对比
+### Docker 学习进度
+
+### Week 1 已完成 ✅
 | 版本 | 大小 | 构建时间 | 特点 |
 |------|------|----------|------|
 | v1.0 | 62.2MB | ~30s | 初始版本 |
