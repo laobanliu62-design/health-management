@@ -63,14 +63,43 @@ getent hosts domain    # DNS 解析
 ### OpenClaw 配置结构 (`/root/.openclaw/openclaw.json`)
 ```
 顶层配置项:
-├── models          # AI 模型配置 (provider + 模型列表)
-├── agents          # Agent 配置 (默认模型 + 各agent)
-├── commands        # 命令配置
-├── session         # 会话配置
-├── channels        # 通道配置 (Matrix等)
-├── gateway         # 网关配置 (端口/认证/远程)
-├── plugins         # 插件配置
-└── meta            # 元信息
+├── models/              # AI 模型配置
+│   ├── mode: merge      # 合并模式
+│   └── providers/
+│       └── fcloud/      # 模型提供商
+│           ├── baseUrl  # OpenAI兼容接口地址
+│           ├── apiKey   # API密钥
+│           ├── api      # 协议类型
+│           └── models[] # 模型列表
+├── agents/              # Agent 配置
+│   ├── defaults/        # 默认配置
+│   │   ├── model.primary: fcloud/qwen-35b
+│   │   ├── workspace: ~
+│   │   ├── timeoutSeconds: 1800
+│   │   └── maxConcurrent: 8
+│   └── list[]           # Agent列表
+│       └── deep-thinker # 深度分析师(用kimi-k25)
+├── commands/            # 命令配置
+│   ├── native: auto
+│   └── restart: true
+├── session/             # 会话配置
+│   ├── dmScope: per-channel-peer
+│   └── resetByType/     # 每日4点重置
+├── channels/            # 通道配置
+│   └── matrix/          # Matrix通道
+│       ├── homeserver: 127.0.0.1:6167
+│       ├── dm.policy: allowlist
+│       └── groupPolicy: allowlist
+├── gateway/             # 网关配置
+│   ├── port: 18799
+│   ├── mode: local
+│   ├── auth.token       # 认证令牌
+│   └── remote.token     # 远程令牌
+├── plugins/             # 插件
+│   └── matrix: enabled
+└── meta/                # 元信息
+    ├── lastTouchedVersion: 2026.3.8
+    └── lastTouchedAt
 ```
 
 ### 关键配置详解
@@ -115,17 +144,60 @@ getent hosts domain    # DNS 解析
 - `openclaw` (PID 4299) - 主进程
 - `openclaw-gateway` (PID 5220) - 网关进程
 
-### Gateway 功能
-1. **消息路由**: 接收各 Channel 消息，分发给 Agent
-2. **模型调度**: 根据 Agent 配置选择 AI 模型
-3. **会话管理**: 创建/销毁/切换会话
-4. **工具调用**: Agent 调用工具的中间层
-5. **认证鉴权**: token 验证
-6. **Cron调度**: 定时任务管理
-
-### 入口文件链
+### 源码结构
 ```
-openclaw.mjs → dist/entry.js → src/gateway/
+/opt/openclaw/src/
+├── entry.ts          # 入口: Node检查→环境变量→runCli
+├── gateway/          # 网关核心
+│   ├── boot.ts       # 启动: BOOT.md加载→会话恢复→健康检查
+│   ├── auth.ts       # 认证鉴权
+│   ├── call.ts       # RPC调用
+│   ├── chat-abort.ts # 中断处理
+│   └── channel-*.ts  # 通道管理
+├── channels/         # 通道实现
+│   ├── channel-config.ts
+│   ├── allow-from.ts     # 白名单
+│   └── allowlist-match.ts
+├── config/           # 配置解析
+│   ├── agent-dirs.ts
+│   ├── sessions/     # 会话存储
+│   └── config-misc.ts
+├── acp/              # ACP 编码Agent协议
+├── agents/           # Agent 管理
+├── cron/             # 定时任务
+├── docker-*.ts       # Docker 集成
+└── skills/ → /opt/openclaw/skills/  # 54个技能
+```
+
+### 启动流程 (源码级)
+```
+1. openclaw.mjs → 检查 Node v22.12+
+2. dist/entry.js → process.title="openclaw"
+3. 加载 ~/.openclaw/openclaw.json
+4. gateway/boot.ts → loadBootFile(BOOT.md)
+5. 启动 Gateway 端口 18799
+6. 连接 Channels (Matrix → 127.0.0.1:6167)
+7. 加载 Skills (54个)
+8. 等待消息
+```
+
+### Gateway 功能详解
+1. **消息路由**: 接收 Channel 消息 → 分发给 Agent
+2. **模型调度**: 按 agent.model.primary 选模型
+3. **会话管理**: session key → store 路径映射
+4. **工具调用**: Agent → Tool 的中间层
+5. **认证鉴权**: token/password 两种模式
+6. **Cron调度**: 定时任务管理
+7. **HTTP API**: OpenAI 兼容接口 (需启用)
+8. **热重载**: 监听配置文件变更，自动 reload
+
+### 排错命令链
+```bash
+openclaw status                    # 总体状态
+openclaw gateway status            # 网关状态
+openclaw logs --follow             # 实时日志
+openclaw doctor                    # 诊断
+openclaw channels status --probe   # 通道连通性
 ```
 
 ---
@@ -136,6 +208,26 @@ openclaw.mjs → dist/entry.js → src/gateway/
 - Provider: fcloud
 - BaseURL: `http://223.167.85.184:3000/v1`
 - 协议: openai-completions
+
+### Gateway 内置 OpenAI 兼容接口
+OpenClaw Gateway 自身也能暴露 OpenAI 兼容接口！
+- **默认关闭**，需配置启用:
+```json
+{
+  "gateway": {
+    "http": {
+      "endpoints": {
+        "chatCompletions": { "enabled": true }
+      }
+    }
+  }
+}
+```
+- 端点: `POST http://<gateway>:<port>/v1/chat/completions`
+- 认证: Bearer token (同 gateway.auth.token)
+- Agent 选择: `model: "openclaw:<agentId>"`
+- 支持 SSE 流式输出 (`stream: true`)
+- 默认无状态，加 `user` 字段可复用会话
 
 ### 接口格式
 ```bash
@@ -164,6 +256,11 @@ POST /v1/chat/completions
 | glm-5 | ✅ | text | 深度思考 |
 | kimi-k25 | ✅ | text+image | 多模态 |
 | minimax-m25 | ✅ | text | 推理 |
+
+### 安全注意
+- HTTP Bearer 认证 = 完全操作者权限
+- 不要暴露到公网！仅 loopback/tailnet
+- 合法 token = 可执行任意 Agent 工具
 
 ---
 
@@ -250,14 +347,14 @@ cat /tmp/hiclaw-company-search.log  # 雷达服务日志
 
 | 技能 | 理论 | 实操 | 掌握度 |
 |------|------|------|--------|
-| Docker 容器 | ✅ | ⏳(需安装) | 60% |
-| WSL/Linux 命令 | ✅ | ✅ | 80% |
-| JSON 配置 | ✅ | ✅ | 85% |
-| Gateway 原理 | ✅ | ⏳ | 70% |
-| OpenAI 兼容接口 | ✅ | ✅ | 80% |
+| Docker 容器 | ✅ | ⏳(需安装) | 65% |
+| WSL/Linux 命令 | ✅ | ✅ | 85% |
+| JSON 配置 | ✅ | ✅ | 90% |
+| Gateway 原理 | ✅ | ✅(源码级) | 85% |
+| OpenAI 兼容接口 | ✅ | ✅ | 90% |
 | Python 后端 | ✅ | ✅ | 85% |
-| 服务启动时序 | ✅ | ✅ | 80% |
-| Docker 日志排查 | ✅ | ⏳(需Docker) | 50% |
+| 服务启动时序 | ✅ | ✅(源码级) | 90% |
+| Docker 日志排查 | ✅ | ⏳(需Docker) | 55% |
 
 ---
 
