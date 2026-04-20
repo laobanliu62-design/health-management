@@ -185,6 +185,17 @@
 
 ---
 
+### 4. 📡 雷达 - 企业搜索服务
+- **口令**: "雷达，查 [公司名]" / "雷达，扫描 [公司名]"
+- **端口**: 8091
+- **接口**: /api/company/search/raw?name=公司名
+- **数据源**: 官网爬取 + Wikipedia + OpenCorporates
+- **路径**: /root/hiclaw-services/company-search/
+- **启动**: crontab @reboot + start.sh 崩溃自动重启
+- **状态**: 🟢 运行中
+
+---
+
 ## 📝 待办事项
 
 ### 高优先级
