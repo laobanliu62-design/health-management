@@ -8,22 +8,65 @@
 ## 1️⃣ Docker 容器
 
 ### 现状
-- WSL 环境未安装 Docker（Windows Docker Desktop 也未装）
-- OpenClaw 当前直接跑在 Node.js 上，非容器化
-- 之前 Docker 学习已完成 Day 1-7（基础已掌握）
+- ✅ Docker 28.2.2 已安装在 WSL 中
+- ✅ Docker daemon 运行中
+- ✅ hiclaw-manager 容器正在运行 (4天+)
+- 之前 Docker 学习已完成 Day 1-7
+
+### hiclaw-manager 容器架构 (核心!)
+```
+镜像: hiclaw/manager-agent:backup-20260415 (4.55GB)
+管理: supervisord (进程管理器)
+端口映射:
+  18001 → 8001 (API Server)
+  18067 → 8067 (Tuwunel)
+  18080 → 8080 (Higress Gateway)
+  18088 → 8088 (Controller)
+  18888 → 18888 (MinIO Console)
+  9001  → 9001  (MinIO API)
+
+内部进程:
+  1. supervisord     - 进程管理 (PID 1)
+  2. minio server    - 对象存储 (:9000/:9001)
+  3. tuwunel         - 隧道服务 (:8067)
+  4. apiserver       - API服务 (:18443)
+  5. nginx           - 反向代理 (:8080)
+  6. higress         - API网关 (:8080/:8443)
+  7. pilot-discovery - 服务发现 (:15080)
+  8. higress-console - 管理控制台 (反复崩溃!)
+```
+
+### 发现的问题
+- ⚠️ higress-console 反复崩溃重启 (exit status 1)
+- 容器内 reaped 大量僵尸进程
 
 ### OpenClaw 中的 Docker
 - `docker-setup.sh` - Docker 启动脚本 (500行)
-- `Dockerfile` 存在于 `/opt/openclaw/` 
 - 关键逻辑:
   - 读取 `openclaw.json` 获取 gateway token
   - 支持 Python3/Node.js 两种方式解析 JSON
   - 支持 sandbox 模式（容器内嵌套容器）
   - 环境变量: `OPENCLAW_IMAGE`, `OPENCLAW_HOME_VOLUME`, `OPENCLAW_SANDBOX`
 
-### 待实操
-- [ ] 安装 Docker Desktop / WSL2 Docker
-- [ ] 用 docker-setup.sh 跑通 OpenClaw 容器版
+### Docker 日志排查实操
+```bash
+# 查容器状态
+docker ps -a
+docker inspect hiclaw-manager --format '{{.State.Status}}'
+
+# 查日志
+docker logs hiclaw-manager --tail 50
+docker logs hiclaw-manager --since 1h
+docker logs hiclaw-manager -f  # 实时
+
+# 进容器排查
+docker exec -it hiclaw-manager bash
+docker exec hiclaw-manager ps aux
+docker exec hiclaw-manager cat /etc/supervisor/conf.d/supervisord.conf
+
+# 资源使用
+docker stats --no-stream
+```
 
 ---
 
