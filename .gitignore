@@ -63,4 +63,4 @@ manager-workspace/
 # credentials (敏感)
 credentials/
 state.json
-soul-configured
+soul-configured__pycache__/
