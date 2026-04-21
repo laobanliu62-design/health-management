@@ -8,12 +8,19 @@ HicLaw 企业搜索服务 - 多源聚合
 import re
 import json
 import asyncio
+import time
 from typing import Optional
 from fastapi import FastAPI, Query
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, Response
 from pydantic import BaseModel
 import httpx
 from bs4 import BeautifulSoup
+from prometheus_client import Counter, Histogram, generate_latest
+
+# Prometheus 指标
+SEARCH_COUNT = Counter('radar_search_total', 'Total company searches', ['source'])
+SEARCH_DURATION = Histogram('radar_search_duration_seconds', 'Search duration', ['source'])
+SEARCH_ERRORS = Counter('radar_errors_total', 'Total search errors', ['source'])
 
 app = FastAPI(
     title="HicLaw 企业搜索 API",
@@ -531,6 +538,7 @@ async def search_company(
     输出: 标准 JSON
     """
     result = await aggregate_company_info(name, domain)
+    SEARCH_COUNT.labels(source='api').inc()
     return result
 
 
@@ -547,6 +555,12 @@ async def search_company_raw(
 @app.get("/health")
 async def health():
     return {"status": "ok", "service": "hiclaw-company-search", "version": "1.0.0"}
+
+
+@app.get("/metrics")
+async def metrics():
+    """Prometheus 指标端点"""
+    return Response(content=generate_latest(), media_type="text/plain")
 
 
 if __name__ == "__main__":
